@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="index.page.title">CACAO — Feed học</title>
+
+    <!-- Google Fonts: Inter & Genos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Genos:wght@700,900&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- CDNs -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Custom Styles -->
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #F4F7F6; /* Light, clean background */
+            color: #1a202c; 
+        }
+        .font-display { font-family: 'Genos', sans-serif; }
+
+        .cacao-card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem; /* 12px */
+            box-shadow: 0 1px 3px 0 rgba(0,0,0,0.07), 0 1px 2px 0 rgba(0,0,0,0.05);
+            border: 1px solid #E2E8F0;
+        }
+
+        .header-card {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid #E2E8F0;
+        }
+        
+        .leaderboard-item { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 8px 4px; 
+            border-bottom: 1px solid #F1F5F9;
+        }
+        .leaderboard-item:last-child { border-bottom: none; }
+    </style>
+</head>
+<body class="min-h-screen antialiased text-base">
+
+    <header class="sticky top-0 z-40">
+        <div class="header-card">
+            <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <a href="/index.html" class="text-3xl font-display font-bold uppercase tracking-wider text-gray-800">CACAO</a>
+                    <div class="flex items-center gap-3 sm:gap-4">
+                         <div class="lang-switcher flex items-center space-x-1 border border-gray-300 rounded-full p-1">
+                            <button data-lang="vi" onclick="changeLanguage('vi')" class="px-3 py-1 rounded-full text-xs font-bold text-gray-500 hover:bg-gray-100">VI</button>
+                            <button data-lang="en" onclick="changeLanguage('en')" class="px-3 py-1 rounded-full text-xs font-bold text-gray-500 hover:bg-gray-100">EN</button>
+                        </div>
+                        <div id="user-menu" class="hidden items-center gap-3 sm:gap-4">
+                            <img id="user-avatar" src="/assets/default-avatar.svg" alt="User Avatar" class="w-9 h-9 rounded-full object-cover border-2 border-gray-200">
+                            <p id="user-name" class="hidden sm:block font-bold text-gray-700"></p>
+                            <a href="/admin.html" id="admin-link" class="hidden text-sm font-bold bg-red-100 text-red-700 px-3 py-1 rounded-full">ADMIN</a>
+                            <button type="button" id="logout-btn" class="text-sm font-medium text-gray-600 hover:text-red-500">Thoát</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="loading-indicator" class="text-center py-20"><p class="text-gray-500">Đang tải dữ liệu...</p></div>
+
+    <div id="main-content" class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+
+            <!-- Left Column -->
+            <aside class="lg:col-span-3 space-y-6 order-2 lg:order-1">
+                <div id="user-progress-card" class="cacao-card p-5 sticky top-24"></div>
+                 <div id="navigation-card" class="cacao-card p-5 sticky top-24"></div>
+            </aside>
+
+            <!-- Center Column: Main Feed -->
+            <main class="lg:col-span-6 order-1 lg:order-2">
+                <div id="feed-container" class="space-y-6"></div>
+            </main>
+
+            <!-- Right Column: Progress & Leaderboard -->
+            <aside class="lg:col-span-3 space-y-6 order-3">
+                <div class="cacao-card p-5 sticky top-24">
+                    <h3 class="font-display font-black text-xl uppercase text-gray-700 mb-4">Bảng Xếp Hạng</h3>
+                    <div id="leaderboard-container" class="space-y-1"></div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- JS Modules -->
+    <script type="module" src="./js/supabase-config.js"></script>
+    <script type="module" src="./js/lang.js"></script>
+    <script type="module" src="./js/leaderboard.js"></script>
+    <script type="module" src="./js/index-app.js"></script>
+</body>
+</html>

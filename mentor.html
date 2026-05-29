@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng bài học mới — CACAO</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Genos:wght@700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- CDNs -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Custom Styles -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #1f2937; }
+        .font-display { font-family: 'Genos', sans-serif; }
+        .btn-primary { background-color: #E07A5F; color: white; transition: background-color 0.2s; border-radius: 0.5rem; font-weight: 700; }
+        .btn-primary:hover { background-color: #d46a4d; }
+        .card { background-color: #fff; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb; }
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 2px solid #d1d5db;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus { 
+            outline: none;
+            border-color: #E07A5F;
+            box-shadow: 0 0 0 2px rgba(224, 122, 95, 0.3);
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 lg:p-8">
+
+    <header class="max-w-4xl mx-auto mb-8">
+        <a href="index.html" class="text-sm text-gray-500 hover:text-orange-500">&larr; Quay lại Feed chính</a>
+        <h1 class="text-3xl lg:text-4xl font-display font-bold text-gray-800 mt-1">Kênh Mentor</h1>
+        <p class="mt-2 text-gray-600">Tạo và đăng các bài học mới để học viên cùng tham gia.</p>
+    </header>
+
+    <main class="max-w-4xl mx-auto">
+        <div class="card p-6 sm:p-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Đăng bài học mới</h2>
+            <form id="create-course-form" class="space-y-6">
+                <div>
+                    <label for="course-title" class="block text-sm font-bold text-gray-700 mb-2">Tiêu đề bài học</label>
+                    <input type="text" id="course-title" name="title" required placeholder="Ví dụ: Giới thiệu về Biến trong JavaScript" class="form-input">
+                </div>
+                <div>
+                    <label for="course-description" class="block text-sm font-bold text-gray-700 mb-2">Nội dung mô tả</label>
+                    <textarea id="course-description" name="description" required rows="5" placeholder="Mô tả ngắn gọn, hấp dẫn về những gì học viên sẽ học được trong bài này..." class="form-input"></textarea>
+                </div>
+                <div class="text-right">
+                    <button type="submit" id="submit-btn" class="btn-primary px-8 py-3 uppercase text-sm tracking-wider">Đăng bài</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script type="module" src="./js/supabase-config.js"></script>
+    <script type="module" src="./js/mentor-app.js"></script>
+</body>
+</html>
