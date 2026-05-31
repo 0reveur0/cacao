@@ -1,18 +1,19 @@
-/* Global styles - set Space Grotesk as the primary font */
+/* Global styles */
 html, body, #root {
   height: 100%;
 }
 
-/* Ensure Space Grotesk is used globally */
+/* Space Grotesk for body and content */
 body {
   font-family: 'Space Grotesk', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Utility to ensure headings use the same font */
+/* Kanit for headings - bold weight for impact */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Kanit', sans-serif;
+  font-weight: 700;
 }
 
 /* Fix potential Vietnamese diacritics rendering issues by forcing proper text-rendering */

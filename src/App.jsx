@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { supabase } from './supabase'
 import LandingPage from './pages/LandingPage'
@@ -47,35 +47,33 @@ const ProtectedRoute = ({ children, requiredRole = null }) => {
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<Login />} />
 
-        {/* Dashboards */}
-        <Route
-          path="/teacher-dashboard"
-          element={
-            <ProtectedRoute requiredRole="teacher">
-              <TeacherDashboard />
-            </ProtectedRoute>
-          }
-        />
+      {/* Dashboards */}
+      <Route
+        path="/teacher-dashboard"
+        element={
+          <ProtectedRoute requiredRole="teacher">
+            <TeacherDashboard />
+          </ProtectedRoute>
+        }
+      />
 
-        <Route
-          path="/student-dashboard"
-          element={
-            <ProtectedRoute requiredRole="student">
-              <StudentDashboard />
-            </ProtectedRoute>
-          }
-        />
+      <Route
+        path="/student-dashboard"
+        element={
+          <ProtectedRoute requiredRole="student">
+            <StudentDashboard />
+          </ProtectedRoute>
+        }
+      />
 
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+      {/* Fallback */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   )
 }
 

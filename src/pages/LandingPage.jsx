@@ -13,7 +13,7 @@ const LandingPage = () => {
       if (session) {
         // Nếu đã login, lấy role từ localStorage và redirect
         const role = localStorage.getItem('userRole')
-        navigate(role === 'teacher' ? '/dashboard-teacher' : '/dashboard-student')
+        navigate(role === 'teacher' ? '/teacher-dashboard' : '/student-dashboard')
       }
       setIsLoading(false)
     }
@@ -29,7 +29,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="text-4xl font-bold font-serif text-amber-950">🍫</div>
-            <h1 className="text-3xl font-bold font-serif text-amber-950">CACAO TLMS</h1>
+            <h1 className="text-3xl font-bold font-display text-amber-950">CACAO TLMS</h1>
           </div>
           <button
             onClick={() => navigate('/login')}
@@ -46,7 +46,7 @@ const LandingPage = () => {
           {/* Left Content */}
           <div className="space-y-8">
             <div>
-              <h2 className="text-5xl font-bold font-serif text-amber-950 mb-4">
+              <h2 className="text-5xl font-bold font-display text-amber-950 mb-4">
                 Hệ Thống Quản Lý Học Tập Cacao
               </h2>
               <p className="text-xl text-stone-700 leading-relaxed">
@@ -70,7 +70,7 @@ const LandingPage = () => {
           <div className="flex justify-center">
             <div className="text-center space-y-4">
               <div className="text-9xl">🍫</div>
-              <p className="text-2xl font-serif text-amber-900">Hương Vị Học Tập</p>
+              <p className="text-2xl font-display text-amber-900">Hương Vị Học Tập</p>
             </div>
           </div>
         </div>
@@ -79,7 +79,7 @@ const LandingPage = () => {
       {/* Features Section */}
       <section className="bg-amber-100/50 py-20 border-y-2 border-amber-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-4xl font-bold font-serif text-amber-950 text-center mb-16">
+          <h3 className="text-4xl font-bold font-display text-amber-950 text-center mb-16">
             Tính Năng Nổi Bật
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -143,7 +143,7 @@ const LandingPage = () => {
       {/* CTA Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="bg-gradient-to-r from-amber-900 to-amber-950 rounded-3xl shadow-2xl p-12 text-center text-amber-50">
-          <h3 className="text-4xl font-bold font-serif mb-4">Sẵn Sàng Bắt Đầu?</h3>
+          <h3 className="text-4xl font-bold font-display mb-4">Sẵn Sàng Bắt Đầu?</h3>
           <p className="text-xl mb-8 opacity-90">
             Tham gia cộng đồng học tập Cacao ngay hôm nay
           </p>

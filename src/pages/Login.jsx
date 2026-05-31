@@ -108,7 +108,7 @@ const Login = () => {
         {/* Logo & Header */}
         <div className="text-center mb-8">
           <div className="text-6xl mb-3 inline-block">🍫</div>
-          <h1 className="text-4xl font-bold font-serif text-amber-950 mb-2">CACAO TLMS</h1>
+          <h1 className="text-4xl font-bold font-display text-amber-950 mb-2">CACAO TLMS</h1>
           <p className="text-stone-600 text-lg">Đăng Nhập Vào Hệ Thống</p>
         </div>
 
@@ -134,7 +134,7 @@ const Login = () => {
           <form onSubmit={isSignup ? handleSignUp : handleEmailLogin} className="space-y-5">
             {/* Role Selection */}
             <div>
-              <label className="block text-sm font-bold text-amber-950 mb-3">
+              <label className="block text-sm font-bold font-display text-amber-950 mb-3">
                 Chọn Vai Trò
               </label>
               <div className="space-y-2">
@@ -163,7 +163,7 @@ const Login = () => {
 
             {/* Email Input */}
             <div>
-              <label htmlFor="email" className="block text-sm font-bold text-amber-950 mb-2">
+              <label htmlFor="email" className="block text-sm font-bold font-display text-amber-950 mb-2">
                 Email
               </label>
               <input
@@ -178,7 +178,7 @@ const Login = () => {
 
             {/* Password Input */}
             <div>
-              <label htmlFor="password" className="block text-sm font-bold text-amber-950 mb-2">
+              <label htmlFor="password" className="block text-sm font-bold font-display text-amber-950 mb-2">
                 Mật Khẩu
               </label>
               <input
