@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import supabase from './supabase'; // Assuming supabase client is exported from './supabase'
+import { supabase } from './supabase'; // Corrected import
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('student'); // Default role
+  const [role, setRole] = useState('student');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(null); // Clear previous errors
+    setError(null);
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -22,21 +22,16 @@ function Login() {
       setError(error.message);
       console.error('Login error:', error);
     } else {
-      // Store the selected role in localStorage
       localStorage.setItem('userRole', role);
       console.log('Login successful. User role stored:', role);
 
-      // Redirect based on the selected role
       if (role === 'teacher') {
         navigate('/teacher-dashboard');
       } else if (role === 'student') {
         navigate('/student-dashboard');
       } else if (role === 'admin') {
-        navigate('/admin-dashboard'); // Navigate to admin dashboard
+        navigate('/admin-dashboard');
       } else {
-        // Fallback if role is somehow invalid or not set, though the form should prevent this.
-        // For safety, redirect to a default or error page, or prompt the user.
-        // Given the prompt's instructions, we stick to the defined roles.
         setError('Invalid role selected. Please choose "teacher", "student", or "admin".');
       }
     }
@@ -49,9 +44,7 @@ function Login() {
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
             <input
               type="email"
               id="email"
@@ -63,9 +56,7 @@ function Login() {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Mật khẩu
-            </label>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Mật khẩu</label>
             <input
               type="password"
               id="password"
@@ -77,9 +68,7 @@ function Login() {
             />
           </div>
           <div>
-            <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-              Vai trò
-            </label>
+            <label htmlFor="role" className="block text-sm font-medium text-gray-700">Vai trò</label>
             <select
               id="role"
               value={role}
@@ -89,7 +78,7 @@ function Login() {
             >
               <option value="student">Học sinh</option>
               <option value="teacher">Giáo viên</option>
-              <option value="admin">Quản trị viên</option> {/* Admin role option */}
+              <option value="admin">Quản trị viên</option>
             </select>
           </div>
           <button
@@ -103,7 +92,6 @@ function Login() {
           <p className="text-sm text-gray-600">
             Quên mật khẩu? <button className="text-indigo-600 hover:underline">Đặt lại mật khẩu</button>
           </p>
-          {/* Add other links like "Don't have an account? Sign up" if applicable */}
         </div>
       </div>
     </div>
