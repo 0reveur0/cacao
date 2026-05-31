@@ -1,162 +1,9 @@
-import React, { useState } from 'react'
-import { supabase } from '../supabase'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import supabase from './supabase'; // Make sure supabase client is correctly imported
 
-const Sidebar = ({ onSignOut }) => (
-  <aside className="w-72 bg-amber-950 text-amber-50 min-h-screen p-6 sticky top-0">
-    <div className="mb-8">
-      <div className="text-4xl">🍫</div>
-      <h2 className="text-lg font-display font-bold mt-2">CACAO TLMS</h2>
-      <p className="text-sm text-amber-200/80">Bảng Điều Khiển Học Sinh</p>
-    </div>
-
-    <nav className="space-y-3">
-      <button className="w-full text-left px-3 py-2 rounded-md bg-amber-800/40 hover:bg-amber-800/60 transition-all font-medium">
-        📚 Khóa Học
-      </button>
-      <button className="w-full text-left px-3 py-2 rounded-md hover:bg-amber-800/20 transition-all font-medium">
-        📈 Tiến Độ
-      </button>
-      <button className="w-full text-left px-3 py-2 rounded-md hover:bg-amber-800/20 transition-all font-medium">
-        📊 Bảng Điểm
-      </button>
-      <button className="w-full text-left px-3 py-2 rounded-md hover:bg-amber-800/20 transition-all font-medium">
-        🆘 Hỗ Trợ
-      </button>
-    </nav>
-
-    <div className="mt-auto pt-6 border-t border-amber-800">
-      <button
-        onClick={onSignOut}
-        className="w-full bg-amber-700 hover:bg-amber-600 text-white px-4 py-2 rounded-md font-bold transition-all shadow-lg"
-      >
-        🚪 Đăng Xuất
-      </button>
-    </div>
-  </aside>
-)
-
-// Component Bảng Xếp Hạng
-const LeaderboardSection = ({ studentCacao, onRedeemReward }) => {
-  const [showRewards, setShowRewards] = useState(false)
-  const [selectedReward, setSelectedReward] = useState(null)
-
-  const leaderboard = [
-    { rank: 1, name: 'Trần Minh Phương', cacaoSeeds: 285, medal: '🥇' },
-    { rank: 2, name: 'Hoàng Gia Hân', cacaoSeeds: 267, medal: '🥈' },
-    { rank: 3, name: 'Phan Đức Minh', cacaoSeeds: 252, medal: '🥉' },
-    { rank: 4, name: 'Nguyễn Văn An', cacaoSeeds: 198, medal: '' },
-    { rank: 5, name: 'Lê Thị Hương', cacaoSeeds: 175, medal: '' },
-  ]
-
-  const rewards = [
-    { id: 1, name: 'Cốc Cacao Nóng', cost: 50, icon: '☕' },
-    { id: 2, name: 'Bánh Socola Miễn Phí', cost: 75, icon: '🍫' },
-    { id: 3, name: 'Voucher Cơm Trưa', cost: 100, icon: '🎁' },
-    { id: 4, name: 'Sách Tham Khảo', cost: 150, icon: '📚' },
-  ]
-
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-      {/* Bảng Xếp Hạng */}
-      <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg p-8 border-2 border-amber-200">
-        <h2 className="text-2xl font-display font-bold text-amber-950 mb-6 flex items-center gap-2">
-          🏆 Bảng Xếp Hạng Top 5
-        </h2>
-
-        <div className="space-y-3">
-          {leaderboard.map((entry, index) => (
-            <div
-              key={entry.rank}
-              className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${
-                index < 3
-                  ? 'bg-gradient-to-r from-amber-50 to-stone-50 border-amber-300'
-                  : 'bg-stone-50 border-stone-200'
-              }`}
-            >
-              <div className="flex items-center gap-4">
-                <div className="text-3xl">{entry.medal || '🏅'}</div>
-                <div>
-                  <p className="font-display font-bold text-stone-900">{entry.name}</p>
-                  <p className="text-sm text-stone-600"># Xếp hạng {entry.rank}</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="text-2xl font-display font-bold text-amber-700">
-                  {entry.cacaoSeeds}
-                </p>
-                <p className="text-xs text-stone-600">Hạt Cacao</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Cacao của Bạn & Đổi Quà */}
-      <div className="space-y-4">
-        {/* Thẻ Cacao của Bạn */}
-        <div className="bg-gradient-to-br from-amber-100 via-stone-50 to-amber-50 rounded-2xl shadow-lg p-8 border-3 border-amber-300">
-          <h3 className="text-lg font-display font-bold text-amber-950 mb-4">🌟 Hạt Cacao Của Tôi</h3>
-          <div className="bg-white rounded-2xl p-6 border-2 border-amber-200 mb-4">
-            <div className="text-center">
-              <p className="text-5xl font-display font-bold text-amber-700 mb-2">{studentCacao}</p>
-              <p className="text-stone-600 font-medium">Hạt Cacao Thưởng</p>
-            </div>
-          </div>
-          <button
-            onClick={() => setShowRewards(!showRewards)}
-            className="w-full bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-800 hover:to-amber-900 text-amber-50 font-display font-bold py-3 rounded-lg transition-all shadow-lg hover:shadow-xl"
-          >
-            {showRewards ? '🎁 Đóng Menu Quà' : '🎁 Đổi Quà'}
-          </button>
-        </div>
-
-        {/* Menu Đổi Quà */}
-        {showRewards && (
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-amber-200">
-            <h4 className="font-display font-bold text-amber-950 mb-4">Danh Sách Phần Thưởng</h4>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
-              {rewards.map((reward) => (
-                <div
-                  key={reward.id}
-                  onClick={() => setSelectedReward(reward)}
-                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                    studentCacao >= reward.cost
-                      ? 'border-amber-300 bg-amber-50 hover:bg-amber-100'
-                      : 'border-stone-300 bg-stone-50 opacity-60 cursor-not-allowed'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="text-3xl">{reward.icon}</span>
-                      <div>
-                        <p className="font-bold text-stone-900">{reward.name}</p>
-                        <p className="text-sm text-stone-600">Giá: {reward.cost} Hạt Cacao</p>
-                      </div>
-                    </div>
-                    {studentCacao >= reward.cost && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          onRedeemReward(reward.id, reward.cost)
-                        }}
-                        className="bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-2 rounded-lg transition-all"
-                      >
-                        Đổi
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
-// Component Cacao Lounge (Mạng Xã Hội)
+// Placeholder components for future sections
+const UpcomingEvents = () => <div>Sự kiện sắp tới</div>;
 const CacaoLounge = ({ currentUserRole }) => {
   const [posts, setPosts] = useState([
     {
@@ -191,272 +38,343 @@ const CacaoLounge = ({ currentUserRole }) => {
       content: 'Haha, ai đó vừa kịp nộp bài trước 30 giây! 😂 Deadline có sức mạnh ghê nhỉ?',
       topic: 'fun',
       timestamp: '2 giờ trước',
-      likes: 24,
-      comments: 8,
+      likes: 7,
+      comments: 1,
       liked: false,
     },
-  ])
+  ]);
+  const [newPostContent, setNewPostContent] = useState('');
+  const [newPostTopic, setNewPostTopic] = useState('discussion');
+  const postsEndRef = useRef(null);
 
-  const [newPostContent, setNewPostContent] = useState('')
-  const [newPostTopic, setNewPostTopic] = useState('homework')
-  const [commentInputs, setCommentInputs] = useState({})
-  const [expandedComments, setExpandedComments] = useState({})
+  const scrollToBottom = () => {
+    postsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
-  const handlePostSubmit = () => {
-    if (newPostContent.trim()) {
-      const newPost = {
-        id: posts.length + 1,
-        author: currentUserRole === 'teacher' ? 'Thầy/Cô Bạn' : 'Bạn',
-        role: currentUserRole,
-        avatar: currentUserRole === 'teacher' ? '👨‍🏫' : '👨‍🎓',
-        content: newPostContent,
-        topic: newPostTopic,
-        timestamp: 'vừa xong',
-        likes: 0,
-        comments: 0,
-        liked: false,
-      }
-      setPosts([newPost, ...posts])
-      setNewPostContent('')
-      setNewPostTopic('homework')
-    }
-  }
+  useEffect(() => {
+    scrollToBottom();
+  }, [posts]);
+
+  const addPost = () => {
+    if (newPostContent.trim() === '') return;
+    const newPost = {
+      id: posts.length + 1,
+      author: 'Bạn', // This should be dynamically set to the logged-in user
+      role: currentUserRole,
+      avatar: currentUserRole === 'teacher' ? '👨‍🏫' : '👩‍🎓',
+      content: newPostContent,
+      topic: newPostTopic,
+      timestamp: 'Ngay bây giờ',
+      likes: 0,
+      comments: 0,
+      liked: false,
+    };
+    setPosts([newPost, ...posts]);
+    setNewPostContent('');
+    setNewPostTopic('discussion');
+  };
 
   const handleLike = (postId) => {
-    setPosts(
-      posts.map((post) =>
-        post.id === postId
-          ? { ...post, liked: !post.liked, likes: post.liked ? post.likes - 1 : post.likes + 1 }
-          : post
-      )
-    )
-  }
-
-  const handleAddComment = (postId) => {
-    const comment = commentInputs[postId]
-    if (comment?.trim()) {
-      setPosts(
-        posts.map((post) =>
-          post.id === postId
-            ? { ...post, comments: post.comments + 1 }
-            : post
-        )
-      )
-      setCommentInputs({ ...commentInputs, [postId]: '' })
-    }
-  }
-
-  const getTopicBadge = (topic) => {
-    const badges = {
-      homework: { color: 'bg-blue-100 text-blue-700', label: '📚 Hỏi Bài' },
-      discussion: { color: 'bg-purple-100 text-purple-700', label: '💬 Thảo Luận' },
-      fun: { color: 'bg-pink-100 text-pink-700', label: '🎉 Giải Trí' },
-    }
-    return badges[topic] || badges.homework
-  }
+    setPosts(posts.map(post =>
+      post.id === postId ? { ...post, liked: !post.liked, likes: post.liked ? post.likes - 1 : post.likes + 1 } : post
+    ));
+  };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-amber-200 mt-8">
-      <h2 className="text-2xl font-display font-bold text-amber-950 mb-6 flex items-center gap-2">
-        ☕ Cacao Lounge - Cộng Đồng
-      </h2>
-
-      {/* Ô Đăng Bài */}
-      <div className="bg-gradient-to-r from-amber-50 to-stone-50 rounded-2xl p-6 border-2 border-amber-200 mb-6">
-        <p className="font-display font-bold text-amber-950 mb-4">✍️ Chia Sẻ Bài Viết Của Bạn</p>
-        <textarea
-          value={newPostContent}
-          onChange={(e) => setNewPostContent(e.target.value)}
-          placeholder="Hỏi bài tập, thảo luận hoặc chia sẻ điều thú vị... 🍫"
-          className="w-full px-4 py-3 rounded-lg border-2 border-amber-200 focus:ring-2 focus:ring-amber-700 focus:border-transparent transition-all text-stone-900 placeholder-stone-400 font-medium resize-none h-20"
-        />
-
-        <div className="flex items-center gap-3 mt-4">
+    <div className="bg-gradient-to-b from-orange-100 to-white p-6 rounded-3xl shadow-lg border border-orange-300">
+      <h3 className="text-3xl font-bold mb-5 text-center font-['Kanit'] text-orange-800">Cacao Lounge</h3>
+      <div className="h-96 overflow-y-auto mb-4 p-4 bg-white rounded-xl border border-orange-200 space-y-4">
+        {posts.map(post => (
+          <div key={post.id} className="p-4 rounded-xl border border-orange-200 bg-orange-50 shadow hover:shadow-md transition-shadow duration-200">
+            <div className="flex items-center mb-2">
+              <span className="text-2xl mr-3 p-2 bg-orange-300 rounded-full">{post.avatar}</span>
+              <div>
+                <p className="font-bold text-orange-800">{post.author}</p>
+                <p className="text-xs text-orange-600">{post.role.charAt(0).toUpperCase() + post.role.slice(1)} - {post.timestamp}</p>
+              </div>
+            </div>
+            <p className="text-lg text-gray-700 space-grotesk mb-3">{post.content}</p>
+            <div className="flex justify-between items-center text-sm">
+              <button onClick={() => handleLike(post.id)} className={`font-semibold ${post.liked ? 'text-red-500' : 'text-orange-600'} hover:text-red-600 transition-colors duration-200`}>
+                {post.liked ? 'Unlike' : 'Like'} ({post.likes})
+              </button>
+              <span className="text-orange-700">💬 {post.comments} Comments</span>
+            </div>
+          </div>
+        ))}
+        <div ref={postsEndRef} />
+      </div>
+      <div className="flex flex-col md:flex-row gap-3 p-4 bg-white rounded-xl border border-orange-200">
+        <div className="flex-grow flex items-center gap-3">
+          <span className="text-2xl p-2 bg-orange-300 rounded-full">{currentUserRole === 'teacher' ? '👨‍🏫' : '👩‍🎓'}</span>
+          <textarea
+            value={newPostContent}
+            onChange={(e) => setNewPostContent(e.target.value)}
+            placeholder="Chia sẻ suy nghĩ của bạn..."
+            className="flex-grow p-3 border border-orange-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 h-24 resize-none space-grotesk"
+            rows="3"
+          />
+        </div>
+        <div className="flex flex-col md:flex-row gap-3 items-center">
           <select
             value={newPostTopic}
             onChange={(e) => setNewPostTopic(e.target.value)}
-            className="flex-1 px-4 py-2 rounded-lg border-2 border-amber-200 focus:ring-2 focus:ring-amber-700 focus:border-transparent text-stone-900 font-medium"
+            className="p-3 border border-orange-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-orange-800 space-grotesk"
           >
-            <option value="homework">📚 Hỏi Bài Tập</option>
-            <option value="discussion">💬 Thảo Luận Chung</option>
-            <option value="fun">🎉 Góc Giải Trí</option>
+            <option value="discussion">Thảo luận</option>
+            <option value="homework">Bài tập</option>
+            <option value="question">Câu hỏi</option>
+            <option value="fun">Vui vẻ</option>
           </select>
-
           <button
-            onClick={handlePostSubmit}
-            disabled={!newPostContent.trim()}
-            className="bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-800 hover:to-amber-900 disabled:from-stone-400 disabled:to-stone-400 text-amber-50 font-display font-bold px-6 py-2 rounded-lg transition-all shadow-lg disabled:cursor-not-allowed"
+            onClick={addPost}
+            className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg space-grotesk"
           >
-            📤 Đăng Bài
+            Đăng bài
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Daily Quests Component
+const DailyQuests = () => {
+  const [quests, setQuests] = useState([
+    { id: 1, task: 'Đọc 1 bài viết trong Cacao Lounge', progress: 0, target: 1, completed: false },
+    { id: 2, task: 'Hoàn thành bài tập về nhà', progress: 0, target: 1, completed: false },
+    { id: 3, task: 'Xem trước bài giảng mới', progress: 0, target: 1, completed: false },
+    { id: 4, task: 'Giúp 1 bạn giải bài', progress: 0, target: 1, completed: false },
+  ]);
+  const [cacaoBeans, setCacaoBeans] = useState(parseInt(localStorage.getItem('cacaoBeans'), 10) || 100);
+  const [showEffect, setShowEffect] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('cacaoBeans', cacaoBeans);
+  }, [cacaoBeans]);
+
+  const completeQuest = (questId) => {
+    setQuests(prevQuests =>
+      prevQuests.map(quest =>
+        quest.id === questId && !quest.completed
+          ? { ...quest, progress: quest.progress + 1, completed: quest.progress + 1 >= quest.target }
+          : quest
+      )
+    );
+  };
+
+  const claimReward = (questId) => {
+    setQuests(prevQuests =>
+      prevQuests.map(quest =>
+        quest.id === questId && quest.completed && !quest.claimed
+          ? { ...quest, claimed: true } // Mark as claimed, visually disabled
+          : quest
+      )
+    );
+    setCacaoBeans(prevBeans => prevBeans + 50); // Add reward
+    setShowEffect(true);
+    setTimeout(() => setShowEffect(false), 1500); // Effect duration
+  };
+
+  // Simulate quest completion progress - replace with actual logic
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setQuests(prevQuests => prevQuests.map(quest => {
+        if (quest.completed || quest.claimed || quest.progress >= quest.target) return quest;
+        // Simulate progress for demo purposes
+        const newProgress = Math.min(quest.progress + Math.random() * 0.5, quest.target);
+        return { ...quest, progress: newProgress, completed: newProgress >= quest.target };
+      }));
+    }, 5000); // Update progress every 5 seconds
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="bg-gradient-to-b from-orange-100 to-white p-6 rounded-3xl shadow-lg border border-orange-300">
+      <h3 className="text-3xl font-bold mb-5 text-center font-['Kanit'] text-orange-800">
+        <span className="relative inline-block">
+          Hộp Quà Cacao 🎁
+          {showEffect && (
+            <span className="absolute inset-0 flex items-center justify-center text-4xl animate-bounce">
+              ✨
+            </span>
+          )}
+        </span>
+      </h3>
+      <div className="space-y-4">
+        {quests.map(quest => (
+          <div key={quest.id} className="bg-white p-4 rounded-2xl shadow border border-orange-200 flex items-center justify-between space-grotesk">
+            <div className="flex-grow mr-4">
+              <p className={`text-lg font-semibold text-orange-800 mb-1 ${quest.completed && !quest.claimed ? 'line-through text-orange-500' : ''}`}>
+                {quest.task}
+              </p>
+              <div className="w-full bg-orange-200 rounded-full h-2.5">
+                <div
+                  className={`h-2.5 rounded-full transition-all duration-500 ${quest.completed ? 'bg-green-500' : 'bg-orange-500'}`}
+                  style={{ width: `${(quest.progress / quest.target) * 100}%` }}
+                ></div>
+              </div>
+            </div>
+            <button
+              onClick={() => claimReward(quest.id)}
+              disabled={!quest.completed || quest.claimed}
+              className={`px-4 py-2 rounded-lg font-bold transition-all duration-300 shadow-md 
+                ${quest.completed && !quest.claimed ? 'bg-yellow-500 hover:bg-yellow-600 text-orange-900' 
+                                                    : 'bg-orange-400 text-orange-700 cursor-not-allowed'}`}
+            >
+              {quest.claimed ? 'Đã nhận' : 'Nhận thưởng'}
+            </button>
+          </div>
+        ))}
+      </div>
+      <div className="mt-6 text-center">
+        <p className="text-xl font-bold text-orange-800 space-grotesk">
+          Số Hạt Cacao:
+          <span className="text-orange-600 ml-2 animate-pulse">
+            {cacaoBeans} 🌰
+          </span>
+        </p>
+      </div>
+    </div>
+  );
+};
+
+// Choco-Quiz Lobby Component
+const ChocoQuizLobby = ({ onStartQuiz }) => {
+  const [players, setPlayers] = useState([
+    { id: 1, name: 'Bạn', avatar: '👩‍🎓' },
+    { id: 2, name: 'Minh Anh', avatar: '👨‍🎓' },
+    { id: 3, name: 'Thùy Linh', avatar: '👩‍🎓' },
+    { id: 4, name: 'Quang Huy', avatar: '👨‍🎓' },
+  ]);
+  const [countdown, setCountdown] = useState(10); // 10 seconds countdown
+
+  useEffect(() => {
+    if (countdown <= 0) {
+      onStartQuiz(); // Trigger quiz start when countdown finishes
+      return;
+    }
+    const timerId = setTimeout(() => setCountdown(countdown - 1), 1000);
+    return () => clearTimeout(timerId); // Cleanup timer
+  }, [countdown, onStartQuiz]);
+
+  return (
+    <div className="bg-gradient-to-br from-yellow-400 to-orange-600 p-8 rounded-3xl shadow-xl border-2 border-orange-400 text-white">
+      <h3 className="text-4xl font-bold mb-6 text-center font-['Kanit'] text-white tracking-wide">
+        Đấu Trường Choco-Quiz 🏆
+      </h3>
+      <div className="text-center mb-8">
+        <p className="text-6xl font-bold text-white animate-pulse countdown-text">{countdown}</p>
+        <p className="text-lg text-white/90 font-semibold space-grotesk">Trận đấu sắp bắt đầu!</p>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        {players.map(player => (
+          <div key={player.id} className="flex flex-col items-center p-3 bg-white/20 rounded-xl backdrop-blur-sm border border-orange-300">
+            <span className="text-4xl mb-2">{player.avatar}</span>
+            <p className="font-bold text-lg space-grotesk">{player.name}</p>
+          </div>
+        ))}
+      </div>
+      <div className="text-center">
+        <button
+          onClick={onStartQuiz}
+          className="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full shadow-lg transform hover:scale-105 transition-all duration-300 space-grotesk"
+        >
+          Bỏ qua Đếm ngược
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// StudentDashboard Component
+const StudentDashboard = () => {
+  const navigate = useNavigate();
+  const [userProfile, setUserProfile] = useState({ name: 'Học Sinh A', role: 'student', avatar: '👩‍🎓', cacaoBeans: 100 });
+  const [activeTab, setActiveTab] = useState('quests'); // Default active tab
+  const [isQuizActive, setIsQuizActive] = useState(false);
+
+  const handleStartQuiz = () => {
+    setIsQuizActive(true);
+    // In a real app, you would navigate to a quiz screen or load quiz questions here
+    console.log('Quiz Started!');
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    localStorage.removeItem('userRole'); // Clear role as well
+    navigate('/login');
+  };
+
+  // Dummy data for tabs/menu - replace with actual data fetching if needed
+  const tabs = [
+    { id: 'quests', name: 'Hộp Quà Cacao', icon: '🎁' },
+    { id: 'lounge', name: 'Cacao Lounge', icon: '💬' },
+    { id: 'events', name: 'Sự kiện', icon: '📅' },
+    { id: 'quiz', name: 'Choco-Quiz', icon: '🏆' },
+  ];
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'quests':
+        return <DailyQuests />;
+      case 'lounge':
+        return <CacaoLounge currentUserRole={userProfile.role} />;
+      case 'events':
+        return <UpcomingEvents />;
+      case 'quiz':
+        return isQuizActive ? <div>Bắt đầu làm Quiz!</div> : <ChocoQuizLobby onStartQuiz={handleStartQuiz} />;
+      default:
+        return <DailyQuests />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-amber-100 to-orange-300 font-['Space_Grotesk'] p-8">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-8 p-5 bg-white/50 rounded-3xl shadow-md backdrop-blur-sm border border-orange-200">
+        <h1 className="text-4xl font-bold font-['Kanit'] text-orange-800">
+          Bảng Điều Khiển Học Sinh
+        </h1>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 p-3 bg-orange-200 rounded-full shadow">
+            <span className="text-2xl">{userProfile.avatar}</span>
+            <span className="font-bold text-orange-800">{userProfile.name}</span>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="px-5 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200"
+          >
+            Đăng xuất
           </button>
         </div>
       </div>
 
-      {/* Danh Sách Bài Viết */}
-      <div className="space-y-4">
-        {posts.map((post) => (
-          <div key={post.id} className="bg-stone-50 rounded-2xl p-6 border-2 border-amber-100 hover:border-amber-300 transition-all">
-            {/* Header Bài Viết */}
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center gap-4">
-                <div className="text-4xl">{post.avatar}</div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-display font-bold text-stone-900">{post.author}</p>
-                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${post.role === 'teacher' ? 'bg-amber-200 text-amber-900' : 'bg-blue-200 text-blue-900'}`}>
-                      {post.role === 'teacher' ? '👨‍🏫 Giáo Viên' : '👨‍🎓 Học Sinh'}
-                    </span>
-                  </div>
-                  <p className="text-sm text-stone-500">{post.timestamp}</p>
-                </div>
-              </div>
-              <span className={`text-xs font-bold px-3 py-1 rounded-full ${getTopicBadge(post.topic).color}`}>
-                {getTopicBadge(post.topic).label}
-              </span>
-            </div>
+      {/* Main Content Area */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Tabs/Menu Navigation */}
+        <div className="lg:col-span-1 flex flex-row lg:flex-col space-x-4 lg:space-x-0 lg:space-y-4">
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`w-full text-left p-4 rounded-2xl shadow-inner transition-all duration-300 font-bold space-grotesk
+                ${activeTab === tab.id
+                  ? 'bg-orange-500 text-white shadow-orange-700 scale-105'
+                  : 'bg-white/50 hover:bg-orange-200 text-orange-800 hover:shadow-md'}`}
+            >
+              <span className="text-2xl mr-3">{tab.icon}</span> {tab.name}
+            </button>
+          ))}
+        </div>
 
-            {/* Nội Dung */}
-            <p className="text-stone-700 mb-4 leading-relaxed">{post.content}</p>
-
-            {/* Lượt Thích & Bình Luận */}
-            <div className="flex items-center gap-6 pb-4 border-b border-amber-200 text-sm text-stone-600">
-              <button
-                onClick={() => handleLike(post.id)}
-                className="flex items-center gap-1 hover:text-red-500 transition-all font-medium"
-              >
-                {post.liked ? '❤️' : '🤍'} {post.likes} Thích
-              </button>
-              <button
-                onClick={() => setExpandedComments({ ...expandedComments, [post.id]: !expandedComments[post.id] })}
-                className="flex items-center gap-1 hover:text-amber-700 transition-all font-medium"
-              >
-                💬 {post.comments} Bình Luận
-              </button>
-            </div>
-
-            {/* Khu Vực Bình Luận */}
-            {expandedComments[post.id] && (
-              <div className="mt-4 space-y-3">
-                <div className="bg-white rounded-lg p-3 border border-amber-200">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={commentInputs[post.id] || ''}
-                      onChange={(e) => setCommentInputs({ ...commentInputs, [post.id]: e.target.value })}
-                      placeholder="Viết bình luận..."
-                      className="flex-1 px-3 py-2 rounded border border-amber-200 focus:ring-1 focus:ring-amber-700 text-sm font-medium"
-                    />
-                    <button
-                      onClick={() => handleAddComment(post.id)}
-                      className="bg-amber-700 hover:bg-amber-800 text-white px-3 py-2 rounded font-bold transition-all text-sm"
-                    >
-                      Gửi
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
+        {/* Content Area */}
+        <div className="lg:col-span-2">
+          {renderContent()}
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-const StudentDashboard = () => {
-  const navigate = useNavigate()
-  const [studentCacao, setStudentCacao] = useState(156)
-
-  const handleSignOut = async () => {
-    localStorage.removeItem('userRole')
-    await supabase.auth.signOut()
-    navigate('/login')
-  }
-
-  const handleRedeemReward = (rewardId, cost) => {
-    if (studentCacao >= cost) {
-      setStudentCacao(studentCacao - cost)
-      alert('✨ Bạn đã đổi phần thưởng thành công! Vui lòng nhận tại văn phòng nhà trường.')
-    }
-  }
-
-  return (
-    <div className="min-h-screen flex bg-gradient-to-br from-amber-50 via-stone-50 to-amber-50">
-      <Sidebar onSignOut={handleSignOut} />
-
-      <main className="flex-1 p-10 overflow-y-auto">
-        {/* Header */}
-        <header className="mb-8">
-          <h1 className="text-4xl font-display font-bold text-amber-950">🍫 Bảng Điều Khiển Học Sinh</h1>
-          <p className="text-stone-700 mt-2 font-medium">Xem khóa học, tiến độ, điểm số và tương tác với cộng đồng</p>
-        </header>
-
-        {/* Stats Cards */}
-        <section className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl shadow-lg p-6 border-2 border-blue-200 hover:shadow-xl transition-all">
-            <div className="text-5xl mb-3">📚</div>
-            <div className="text-sm text-stone-600 font-medium">Khóa Học Đang Học</div>
-            <div className="text-3xl font-display font-bold text-blue-900">4</div>
-          </div>
-
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg p-6 border-2 border-green-200 hover:shadow-xl transition-all">
-            <div className="text-5xl mb-3">📈</div>
-            <div className="text-sm text-stone-600 font-medium">Tiến Độ Trung Bình</div>
-            <div className="text-3xl font-display font-bold text-green-900">78%</div>
-          </div>
-
-          <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl shadow-lg p-6 border-2 border-purple-200 hover:shadow-xl transition-all">
-            <div className="text-5xl mb-3">📊</div>
-            <div className="text-sm text-stone-600 font-medium">Điểm Trung Bình</div>
-            <div className="text-3xl font-display font-bold text-purple-900">8.6</div>
-          </div>
-
-          <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl shadow-lg p-6 border-2 border-orange-200 hover:shadow-xl transition-all">
-            <div className="text-5xl mb-3">🔥</div>
-            <div className="text-sm text-stone-600 font-medium">Streak Ngày Học</div>
-            <div className="text-3xl font-display font-bold text-orange-900">12</div>
-          </div>
-        </section>
-
-        {/* Course Progress */}
-        <section className="bg-white rounded-2xl shadow-lg p-8 border-2 border-amber-200 mb-8">
-          <h2 className="text-2xl font-display font-bold text-amber-950 mb-6 flex items-center gap-2">
-            📖 Tiến Độ Khóa Học
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              { title: 'Ngữ Văn Căn Bản', progress: 42, emoji: '📖' },
-              { title: 'Toán 10 - Đại Số', progress: 78, emoji: '🔢' },
-              { title: 'Khoa Học Tự Nhiên', progress: 16, emoji: '🧪' },
-              { title: 'Tiếng Anh Giao Tiếp', progress: 95, emoji: '🗣️' },
-            ].map((course, index) => (
-              <div key={index} className="bg-gradient-to-r from-amber-50 to-stone-50 rounded-xl p-6 border-2 border-amber-200">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl">{course.emoji}</span>
-                    <h3 className="font-display font-bold text-stone-900">{course.title}</h3>
-                  </div>
-                  <div className="font-display font-bold text-amber-700">{course.progress}%</div>
-                </div>
-                <div className="w-full bg-stone-300 rounded-full h-3 overflow-hidden">
-                  <div
-                    className="h-3 bg-gradient-to-r from-amber-500 to-amber-700 transition-all"
-                    style={{ width: `${course.progress}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Leaderboard & Rewards */}
-        <LeaderboardSection studentCacao={studentCacao} onRedeemReward={handleRedeemReward} />
-
-        {/* Cacao Lounge */}
-        <CacaoLounge currentUserRole="student" />
-      </main>
-    </div>
-  )
-}
-
-export default StudentDashboard
+export default StudentDashboard;

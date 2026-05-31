@@ -31,11 +31,13 @@ function Login() {
         navigate('/teacher-dashboard');
       } else if (role === 'student') {
         navigate('/student-dashboard');
+      } else if (role === 'admin') {
+        navigate('/admin-dashboard'); // Navigate to admin dashboard
       } else {
         // Fallback if role is somehow invalid or not set, though the form should prevent this.
         // For safety, redirect to a default or error page, or prompt the user.
         // Given the prompt's instructions, we stick to the defined roles.
-        setError('Invalid role selected. Please choose "teacher" or "student".');
+        setError('Invalid role selected. Please choose "teacher", "student", or "admin".');
       }
     }
   };
@@ -87,6 +89,7 @@ function Login() {
             >
               <option value="student">Học sinh</option>
               <option value="teacher">Giáo viên</option>
+              <option value="admin">Quản trị viên</option> {/* Admin role option */}
             </select>
           </div>
           <button

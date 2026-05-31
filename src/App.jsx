@@ -7,7 +7,7 @@ import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import StudentDashboard from './pages/StudentDashboard';
 import TeacherDashboard from './pages/TeacherDashboard';
-// Assuming Home.jsx is not directly used in routing but might be elsewhere
+import AdminDashboard from './pages/AdminDashboard'; // Import AdminDashboard
 
 // ProtectedRoute component to enforce role-based access
 function ProtectedRoute({ children, requiredRole }) {
@@ -84,6 +84,16 @@ function App() {
         element={
           <ProtectedRoute requiredRole="student">
             <StudentDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Admin Dashboard Route */}
+      <Route
+        path="/admin-dashboard"
+        element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminDashboard />
           </ProtectedRoute>
         }
       />
