@@ -8,6 +8,8 @@ const Login = () => {
   const [role, setRole] = useState('student') // 'student' hoặc 'teacher'
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [info, setInfo] = useState('')
+  const [isSignup, setIsSignup] = useState(false)
   const navigate = useNavigate()
 
   // Form đăng nhập bằng email/password
@@ -15,33 +17,62 @@ const Login = () => {
     e.preventDefault()
     setLoading(true)
     setError('')
+    setInfo('')
 
     try {
       if (!email || !password) {
         throw new Error('Vui lòng nhập Email và Password')
       }
 
-      // Đăng nhập thực tế với Supabase
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
       if (signInError) {
-        throw signInError
+        // Hiển thị thông báo lỗi rõ ràng cho người dùng
+        setError('Tài khoản hoặc mật khẩu không chính xác, vui lòng thử lại!')
+        return
       }
 
       // Lưu role vào localStorage
       localStorage.setItem('userRole', role)
 
-      // Điều hướng theo role
+      // Điều hướng theo role (không chuyển về Landing Page)
       if (role === 'teacher') {
-        navigate('/dashboard-teacher')
+        navigate('/teacher-dashboard')
       } else {
-        navigate('/dashboard-student')
+        navigate('/student-dashboard')
       }
     } catch (err) {
       setError(err.message || 'Đăng nhập thất bại')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Đăng ký tài khoản
+  const handleSignUp = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    setInfo('')
+
+    try {
+      if (!email || !password) {
+        throw new Error('Vui lòng nhập Email và Password')
+      }
+
+      const { data, error: signUpError } = await supabase.auth.signUp({ email, password })
+
+      if (signUpError) {
+        setError(signUpError.message || 'Đăng ký thất bại')
+        return
+      }
+
+      setInfo('Đã đăng ký thành công. Vui lòng kiểm tra email để xác nhận (nếu có).')
+    } catch (err) {
+      setError(err.message || 'Đăng ký thất bại')
     } finally {
       setLoading(false)
     }
@@ -71,7 +102,6 @@ const Login = () => {
       setLoading(false)
     }
   }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-stone-50 to-amber-50 flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
@@ -84,24 +114,24 @@ const Login = () => {
 
         {/* Login Card */}
         <div className="bg-white rounded-3xl shadow-2xl p-8 space-y-6 border-2 border-amber-200">
-          {/* Error Message */}
-          {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-4 text-red-700 text-sm">
-              <p className="font-semibold">⚠️ Lỗi</p>
-              <p>{error}</p>
-            </div>
-          )}
+            {/* Error Message */}
+            {error && (
+              <div className="bg-rose-50 border-l-4 border-amber-900 rounded-lg p-4 text-amber-900 text-sm">
+                <p className="font-semibold">⚠️ Lỗi</p>
+                <p>{error}</p>
+              </div>
+            )}
 
-          {/* Success Message */}
-          {!error && (
-            <div className="bg-amber-50 border-l-4 border-amber-700 rounded-lg p-4 text-stone-700 text-sm">
-              <p className="font-semibold">ℹ️ Hướng dẫn</p>
-              <p>Hãy chọn vai trò của bạn, nhập Email, Password, rồi đăng nhập.</p>
-            </div>
-          )}
+            {/* Info / Success Message */}
+            {info && (
+              <div className="bg-amber-50 border-l-4 border-amber-700 rounded-lg p-4 text-stone-700 text-sm">
+                <p className="font-semibold">ℹ️ Thông báo</p>
+                <p>{info}</p>
+              </div>
+            )}
 
           {/* Form */}
-          <form onSubmit={handleEmailLogin} className="space-y-5">
+          <form onSubmit={isSignup ? handleSignUp : handleEmailLogin} className="space-y-5">
             {/* Role Selection */}
             <div>
               <label className="block text-sm font-bold text-amber-950 mb-3">
@@ -167,7 +197,7 @@ const Login = () => {
               disabled={loading}
               className="w-full bg-amber-700 hover:bg-amber-800 disabled:bg-stone-400 text-amber-50 font-bold py-3 rounded-lg transition-all duration-300 text-lg shadow-lg hover:shadow-xl"
             >
-              {loading ? '⏳ Đang Xử Lý...' : '🔓 Đăng Nhập'}
+              {loading ? '⏳ Đang Xử Lý...' : isSignup ? '🔐 Đăng ký' : '🔓 Đăng Nhập'}
             </button>
           </form>
 
@@ -228,10 +258,17 @@ const Login = () => {
 
           {/* Footer Link */}
           <p className="text-center text-stone-600 text-sm">
-            Chưa có tài khoản?{' '}
-            <a href="#" className="text-amber-700 hover:text-amber-800 font-bold">
-              Đăng ký tại đây
-            </a>
+            {isSignup ? 'Đã có tài khoản? ' : 'Chưa có tài khoản? '}
+            <button
+              onClick={() => {
+                setIsSignup((s) => !s)
+                setError('')
+                setInfo('')
+              }}
+              className="text-amber-700 hover:text-amber-800 font-bold"
+            >
+              {isSignup ? 'Quay lại Đăng Nhập' : 'Đăng ký tại đây'}
+            </button>
           </p>
         </div>
       </div>
