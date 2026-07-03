@@ -1,0 +1,170 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  STUDENT
+  INSTRUCTOR
+  ADMIN
+}
+
+enum SubmissionStatus {
+  TODO
+  DOING
+  UNDER_REVIEW
+  COMPLETED
+}
+
+enum EvaluationStatus {
+  MASTERED
+  REVISION_NEEDED
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  passwordHash String
+  fullName     String
+  role         Role          @default(STUDENT)
+  locale       String        @default("vi")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  
+  notes        LessonNote[]
+  submissions  AssignmentSubmission[]
+  progress     UserProgress[]
+  discussions  Discussion[]
+  replies      DiscussionReply[]
+  feeds        UserFeedNotification[]
+}
+
+model Course {
+  id          String       @id @default(uuid())
+  title       String
+  description String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  
+  lessons     Lesson[]
+}
+
+model Lesson {
+  id           String        @id @default(uuid())
+  courseId     String
+  course       Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title        String
+  videoUrl     String
+  pdfUrl       String?
+  sequence     Int
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  
+  notes        LessonNote[]
+  quiz         MilestoneQuiz?
+  assignments  Assignment[]
+}
+
+model LessonNote {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId  String
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, lessonId])
+}
+
+model MilestoneQuiz {
+  id        String         @id @default(uuid())
+  lessonId  String         @unique
+  lesson    Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  questions Json
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model UserProgress {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId   String
+  completed  Boolean  @default(false)
+  score      Int      @default(0)
+  unlockedAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([userId, lessonId])
+}
+
+model Assignment {
+  id          String                 @id @default(uuid())
+  lessonId    String
+  lesson      Lesson                 @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  dueDate     DateTime?
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  
+  submissions AssignmentSubmission[]
+}
+
+model AssignmentSubmission {
+  id           String                @id @default(uuid())
+  assignmentId String
+  assignment   Assignment            @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fileUrl      String
+  status       SubmissionStatus      @default(TODO)
+  evaluation   EvaluationStatus?
+  feedbackText String?
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+
+  @@unique([userId, assignmentId])
+}
+
+model Discussion {
+  id        String            @id @default(uuid())
+  userId    String
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  content   String
+  resolved  Boolean           @default(false)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  
+  replies   DiscussionReply[]
+}
+
+model DiscussionReply {
+  id           String     @id @default(uuid())
+  discussionId String
+  discussion   Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content      String
+  isAiResponse Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model UserFeedNotification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  content   String
+  isSystem  Boolean  @default(true)
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

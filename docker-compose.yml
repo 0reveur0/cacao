@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  cacao-postgres:
+    image: postgres:15-alpine
+    container_name: cacao-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-cacao_admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-cacao_secure_pass}
+      POSTGRES_DB: ${DB_NAME:-cacao_db}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - cacao-network
+
+  cacao-ollama:
+    image: ollama/ollama:latest
+    container_name: cacao-ollama
+    restart: always
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - cacao-network
+
+volumes:
+  postgres_data:
+    driver: local
+  ollama_data:
+    driver: local
+
+networks:
+  cacao-network:
+    driver: bridge
