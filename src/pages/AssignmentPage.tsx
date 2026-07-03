@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence, Reorder } from 'motion/react';
 import { ArrowLeft, LayoutDashboard, List, Calendar, Clock, Upload, FileText, Check, CircleAlert as AlertCircle, MoveHorizontal as MoreHorizontal, Plus, Search, ListFilter as Filter, ChevronDown, ChevronRight, Trash2, CreditCard as Edit3, Send, X, Download, MessageSquare, Star, BookOpen, Code, PenTool, ExternalLink } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/LocaleContext';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 type AssignmentStatus = 'TODO' | 'IN_PROGRESS' | 'UNDER_REVIEW' | 'COMPLETED';

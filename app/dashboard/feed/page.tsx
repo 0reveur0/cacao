@@ -117,7 +117,7 @@ export default function FeedPage() {
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            {[
+            {([
               { key: 'all', label: t.filterAll },
               { key: 'system', label: t.filterSystem },
               { key: 'lecturer', label: t.filterLecturer },

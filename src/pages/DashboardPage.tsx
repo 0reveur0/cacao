@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../context/AuthContext';
 import { useProgress } from '../context/ProgressContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/LocaleContext';
 import Sidebar from '../components/Sidebar';
 import InteractiveLessonPage from './InteractiveLessonPage';
 import PomodoroTimer from '../components/PomodoroTimer';

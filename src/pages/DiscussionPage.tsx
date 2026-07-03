@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, MessageSquare, Circle as HelpCircle, Search, Plus, Send, X, Cpu, User, CircleCheck as CheckCircle2, Clock, BookOpen, ChevronRight, RefreshCw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/LocaleContext';
 
 // ─── Bilingual Dictionary ─────────────────────────────────────────────────────
 const discussionI18n = {

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
 export type Locale = 'vi' | 'en';
 
@@ -537,17 +537,34 @@ export const translations = {
 export type TranslationKey = keyof typeof translations.vi;
 
 // ─── Context ────────────────────────────────────────────────────────────────────
-interface LanguageContextType {
+interface LocaleContextType {
   locale: Locale;
   t: (key: TranslationKey, vars?: Record<string, string | number>) => string;
   toggle: () => void;
   setLocale: (nextLocale: Locale) => void;
 }
 
-const LanguageContext = createContext<LanguageContextType | null>(null);
+const LOCALE_STORAGE_KEY = 'cacao-locale';
+const LocaleContext = createContext<LocaleContextType | null>(null);
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
+export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocale] = useState<Locale>('vi');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY) as Locale | null;
+    if (stored === 'vi' || stored === 'en') {
+      setLocale(stored);
+      return;
+    }
+    const browserLocale = navigator.language?.startsWith('en') ? 'en' : 'vi';
+    setLocale(browserLocale);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.setItem(LOCALE_STORAGE_KEY, locale);
+  }, [locale]);
 
   const t = (key: TranslationKey, vars?: Record<string, string | number>): string => {
     let str: string = (translations[locale] as Record<string, string>)[key]
@@ -565,14 +582,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const setLocaleValue = (nextLocale: Locale) => setLocale(nextLocale);
 
   return (
-    <LanguageContext.Provider value={{ locale, t, toggle, setLocale: setLocaleValue }}>
+    <LocaleContext.Provider value={{ locale, t, toggle, setLocale: setLocaleValue }}>
       {children}
-    </LanguageContext.Provider>
+    </LocaleContext.Provider>
   );
 }
 
-export function useLanguage(): LanguageContextType {
-  const ctx = useContext(LanguageContext);
-  if (!ctx) throw new Error('useLanguage must be used inside LanguageProvider');
+export function useLanguage(): LocaleContextType {
+  const ctx = useContext(LocaleContext);
+  if (!ctx) throw new Error('useLanguage must be used inside LocaleProvider');
   return ctx;
 }

@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Users, BookOpen, FileText, DollarSign, ChevronRight, ChevronDown, Plus, MoveHorizontal as MoreHorizontal, Search, RefreshCw, LogOut, Check } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/LocaleContext';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 type UserRole = 'STUDENT' | 'TEACHER' | 'ADMIN';

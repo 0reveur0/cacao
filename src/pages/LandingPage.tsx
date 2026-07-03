@@ -20,7 +20,7 @@ import {
   Lock,
   Clock,
 } from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/LocaleContext';
 
 // ─── i18n dictionary ───────────────────────────────────────────────────────────
 const landingTranslations = {

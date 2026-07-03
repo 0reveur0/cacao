@@ -1,14 +1,19 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Body, Controller, Param, Post, Request, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ProgressService } from './progress.service';
+import { QuizSubmissionDto } from './dto/quiz-submission.dto';
 
 @Controller('api/progress')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class ProgressController {
   constructor(private progressService: ProgressService) {}
 
-  @Post('verify')
-  async verify(@Request() req: any, @Body() body: { lessonId: string; answers: number[] }) {
-    return this.progressService.verifyQuizSubmission(req.user.sub, body.lessonId, body.answers);
+  @Post('verify/:lessonId')
+  async verify(
+    @Request() req: any,
+    @Param('lessonId') lessonId: string,
+    @Body() body: QuizSubmissionDto,
+  ) {
+    return this.progressService.verifyQuizSubmission(req.user.id, lessonId, body.answers);
   }
 }

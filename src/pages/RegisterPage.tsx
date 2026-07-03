@@ -5,7 +5,7 @@
 
 import { useState, type FormEvent, type CSSProperties, type ReactNode } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/LocaleContext';
 import { UserRole } from '../types';
 import { Mail, Lock, Eye, EyeOff, User, GraduationCap, BookOpen, Shield, Coffee, CheckCircle2 } from 'lucide-react';
 

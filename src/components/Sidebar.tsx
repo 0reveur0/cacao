@@ -4,7 +4,7 @@
  */
 
 import { useAuth } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/LocaleContext';
 import { LogOut, ChevronDown, Plus, LayoutGrid, BookOpen, FileText, MessageSquareText, CreditCard, CheckCircle2, Coffee, Languages, BookMarked, LockKeyhole } from 'lucide-react';
 
 interface SidebarLesson {

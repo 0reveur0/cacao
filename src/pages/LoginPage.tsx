@@ -4,7 +4,9 @@
  */
 
 import { useState, type FormEvent } from 'react';
-import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LocaleContext';
+import { useToast } from '../components/Toast';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Coffee, RefreshCw } from 'lucide-react';
 
 // ─── Exact Translation Dictionary (No Modification) ─────────────────────────────
@@ -45,7 +47,9 @@ interface LoginPageProps {
 }
 
 export default function LoginPage({ onNavigateToRegister, onLoginSuccess }: LoginPageProps) {
+  const { signIn } = useAuth();
   const { locale, toggle } = useLanguage();
+  const { notify } = useToast();
   const t = (key: string) => (authI18n[locale as AuthLocale] as Record<string, string>)[key] || key;
 
   const [email, setEmail] = useState('');
@@ -60,40 +64,24 @@ export default function LoginPage({ onNavigateToRegister, onLoginSuccess }: Logi
     setLoading(true);
 
     try {
-      // Native fetch to self-hosted NestJS backend
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Include HTTP-only cookies
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        // Handle authentication error
+      const { error } = await signIn(email, password);
+      if (error) {
         setError(t('errorInvalid'));
+        notify({ title: t('errorInvalid'), variant: 'error' });
         setLoading(false);
         return;
       }
 
-      // Success - store JWT token if returned (or rely on HTTP-only cookie)
-      if (data.token) {
-        localStorage.setItem('auth_token', data.token);
-      }
-
-      // Redirect to dashboard via callback
+      notify({ title: locale === 'vi' ? 'Đăng nhập thành công' : 'Signed in successfully', variant: 'success' });
       if (onLoginSuccess) {
         onLoginSuccess();
       } else {
-        // Fallback: navigate to dashboard
         window.location.href = '/dashboard';
       }
     } catch (err) {
       console.error('Login error:', err);
       setError(t('errorInvalid'));
+      notify({ title: t('errorInvalid'), variant: 'error' });
       setLoading(false);
     }
   };

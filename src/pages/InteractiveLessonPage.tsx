@@ -7,7 +7,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Plus, Clock, Save, Check, CircleAlert as AlertCircle, Download, ChevronDown, ChevronRight, BookOpen, Video, FileText, FolderOpenDot, LockKeyhole, NotebookPen } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/LocaleContext';
 import { Lesson, Quiz, AIFeedbackResponse, LessonNote } from '../types';
 
 function getStoredNotes(userId: string, lessonId: string) {

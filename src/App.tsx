@@ -7,7 +7,8 @@ import { useState, useEffect } from 'react';
 import { Coffee } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
-import { LanguageProvider } from './context/LanguageContext';
+import { LocaleProvider } from './context/LocaleContext';
+import { ToastProvider } from './components/Toast';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -104,12 +105,14 @@ function AppContent() {
 
 export default function App() {
   return (
-    <LanguageProvider>
+    <LocaleProvider>
       <AuthProvider>
-        <ProgressProvider>
-          <AppContent />
-        </ProgressProvider>
+        <ToastProvider>
+          <ProgressProvider>
+            <AppContent />
+          </ProgressProvider>
+        </ToastProvider>
       </AuthProvider>
-    </LanguageProvider>
+    </LocaleProvider>
   );
 }

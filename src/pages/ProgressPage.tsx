@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Lock, CircleCheck as CheckCircle2, Circle, ChevronDown, ChevronRight, Check, Send, RotateCcw } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/LocaleContext';
 import { AIFeedbackResponse, Question } from '../types';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
